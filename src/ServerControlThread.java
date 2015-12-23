@@ -16,7 +16,11 @@ public class ServerControlThread extends Thread{
 	
 	
 	
-
+	/**
+	 * Construtor for ServerControlThread
+	 * @param socketControl
+	 * @param serverSocketForFileTransfer
+	 */
 	public ServerControlThread(Socket socketControl,ServerSocket serverSocketForFileTransfer) {
 		super();
 		this.socketControl = socketControl;
@@ -42,7 +46,7 @@ public class ServerControlThread extends Thread{
 					return;
 				}
 				if(response.contains("need_to_calculate")){
-					System.out.println("Hoce da izvrsi racunsku operaciju");
+					System.out.println("Request For Calculation");
 					outputToClient.println("approved");
 					Socket newSocket=serverSocketForFileTransfer.accept();
 					new ServerFileTransferThread(newSocket).start();
@@ -50,8 +54,8 @@ public class ServerControlThread extends Thread{
 				
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println("Lost connection");
+			//e.printStackTrace();
+			System.out.println("Lost connection with Client.");
 			ServerCalculator.serverControlSocket.remove(this);
 		}
 		

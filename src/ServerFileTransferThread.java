@@ -17,7 +17,10 @@ public class ServerFileTransferThread extends Thread {
 	ObjectInputStream dataFromClient=null;
 	String result;
 	
-	
+	/**
+	 * Constructor for Transfer Data
+	 * @param socketFileTransfer
+	 */
 	public ServerFileTransferThread(Socket socketFileTransfer) {
 		super();
 		this.socketFileTransfer = socketFileTransfer;
@@ -28,7 +31,7 @@ public class ServerFileTransferThread extends Thread {
 		try {
 			inputToClient = new BufferedReader(new InputStreamReader(socketFileTransfer.getInputStream()));
 			outputToClient = new PrintStream(socketFileTransfer.getOutputStream());
-		
+			//requsts & anwsers
 			outputToClient.println("operation");
 			znak=inputToClient.readLine();
 			outputToClient.println("numbers");
@@ -52,19 +55,20 @@ public class ServerFileTransferThread extends Thread {
 			if(znak.contains("*"))
 				result=""+mnozenje(nizBrojeva);
 			if(znak.contains("/")){
-				boolean a=true;
+				boolean isItDividedByZero=false;
 				for (int i = 1; i < nizBrojeva.size(); i++) {
 					if(nizBrojeva.get(i)==0){
-						a=false;
+						isItDividedByZero=true;
+						break;
 					}
-				}if(a){
+				}if(!isItDividedByZero){
 					result=""+deljenje(nizBrojeva);
 				}else{
 					result="ne mozes deliti 0";
 				}
 			}
 			outputToClient.println(result);
-			System.out.println(result);
+			//System.out.println(result);
 			/*while(true){
 				
 				if(inputToClient.readLine().contains("recived")){
@@ -72,11 +76,12 @@ public class ServerFileTransferThread extends Thread {
 					break;
 				}
 			}*/
-			
+			inputToClient.close();
+			outputToClient.close();
 			socketFileTransfer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("Greska u prenosu podataka");
+			System.out.println("Error in transfering data!");
 		}
 	}
 	private double sabiranje(LinkedList<Double> listaBrojeva){
