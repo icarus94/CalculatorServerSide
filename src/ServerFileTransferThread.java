@@ -32,12 +32,18 @@ public class ServerFileTransferThread extends Thread {
 			outputToClient.println("operation");
 			znak=inputToClient.readLine();
 			outputToClient.println("numbers");
-			dataFromClient = new ObjectInputStream(socketFileTransfer.getInputStream());
+			String c;
+			while(!((c=inputToClient.readLine()).contains("done"))){
+				double b=Double.parseDouble(c);
+				nizBrojeva.addFirst(b);
+			}
+			
+			/*dataFromClient = new ObjectInputStream(socketFileTransfer.getInputStream());
 			Object readObject = dataFromClient.readObject();
 			dataFromClient.close();
 			if(readObject instanceof LinkedList<?>)
 				nizBrojeva = (LinkedList<Double>) readObject;
-			
+			*/
 			
 			if(znak.contains("+"))
 				result=""+sabiranje(nizBrojeva);
@@ -71,41 +77,37 @@ public class ServerFileTransferThread extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("Greska u prenosu podataka");
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("neodg objekat");
 		}
 	}
 	private double sabiranje(LinkedList<Double> listaBrojeva){
 		int i=0;
 		if(listaBrojeva.isEmpty())
 			return 0;
-		double result=listaBrojeva.get(i);
+		double res=listaBrojeva.get(i);
 		for (i = 1; i < listaBrojeva.size(); i++) {
-			result=result+listaBrojeva.get(i);
+			res=res+listaBrojeva.get(i);
 		}
-		return result;
+		return res;
 	}
 	private double oduzimanje(LinkedList<Double> listaBrojeva){
 		int i=0;
 		if(listaBrojeva.isEmpty())
 			return 0;
-		double result=listaBrojeva.get(i);
+		double res=listaBrojeva.get(i);
 		for (i = 1; i < listaBrojeva.size(); i++) {
-			result=result-listaBrojeva.get(i);
+			res=res-listaBrojeva.get(i);
 		}
-		return result;
+		return res;
 	}
 	private double mnozenje(LinkedList<Double> listaBrojeva){
 		int i=0;
 		if(listaBrojeva.isEmpty())
 			return 0;
-		double result=listaBrojeva.get(i);
+		double res=listaBrojeva.get(i);
 		for (i = 1; i < listaBrojeva.size(); i++) {
-			result=result*listaBrojeva.get(i);
+			res=res*listaBrojeva.get(i);
 		}
-		return result;
+		return res;
 	}
 	/**
 	 * pazi na 0 kao unet broj!!!!
