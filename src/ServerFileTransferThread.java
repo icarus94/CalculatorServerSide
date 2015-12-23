@@ -11,10 +11,10 @@ import java.util.LinkedList;
 public class ServerFileTransferThread extends Thread {
 	Socket socketFileTransfer=null;
 	String znak=null;
-	LinkedList<Broj> nizBrojeva = new LinkedList<Broj>();
+	LinkedList<Double> nizBrojeva = new LinkedList<Double>();
 	BufferedReader inputToClient = null;
 	PrintStream outputToClient = null;
-	ObjectInputStream dataToClient=null;
+	ObjectInputStream dataFromClient=null;
 	String result;
 	
 	
@@ -24,30 +24,31 @@ public class ServerFileTransferThread extends Thread {
 	}
 
 
-	 synchronized public void run(){
+	synchronized public void run(){
 		try {
-			//inputToClient = new BufferedReader(new InputStreamReader(socketFileTransfer.getInputStream()));
+			inputToClient = new BufferedReader(new InputStreamReader(socketFileTransfer.getInputStream()));
 			outputToClient = new PrintStream(socketFileTransfer.getOutputStream());
-			dataToClient = new ObjectInputStream((socketFileTransfer.getInputStream()));
+		
 			outputToClient.println("operation");
 			znak=inputToClient.readLine();
 			outputToClient.println("numbers");
-			Object readObject = dataToClient.readObject();
-			dataToClient.close();
+			dataFromClient = new ObjectInputStream(socketFileTransfer.getInputStream());
+			Object readObject = dataFromClient.readObject();
+			dataFromClient.close();
 			if(readObject instanceof LinkedList<?>)
-				nizBrojeva= (LinkedList<Broj>) readObject;
+				nizBrojeva = (LinkedList<Double>) readObject;
 			
 			
-			if(znak=="+")
+			if(znak.contains("+"))
 				result=""+sabiranje(nizBrojeva);
-			if(znak=="-")
+			if(znak.contains("-"))
 				result=""+oduzimanje(nizBrojeva);
-			if(znak=="*")
+			if(znak.contains("*"))
 				result=""+mnozenje(nizBrojeva);
-			if(znak=="/"){
+			if(znak.contains("/")){
 				boolean a=true;
 				for (int i = 1; i < nizBrojeva.size(); i++) {
-					if(nizBrojeva.get(i).getBroj()==0){
+					if(nizBrojeva.get(i)==0){
 						a=false;
 					}
 				}if(a){
@@ -56,11 +57,16 @@ public class ServerFileTransferThread extends Thread {
 					result="ne mozes deliti 0";
 				}
 			}
-			while(true){
-				outputToClient.println(result);
-				if(inputToClient.readLine().contains("recived"))
+			outputToClient.println(result);
+			System.out.println(result);
+			/*while(true){
+				
+				if(inputToClient.readLine().contains("recived")){
+					outputToClient.println("OK");
 					break;
-			}
+				}
+			}*/
+			
 			socketFileTransfer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -71,33 +77,33 @@ public class ServerFileTransferThread extends Thread {
 			System.out.println("neodg objekat");
 		}
 	}
-	private double sabiranje(LinkedList<Broj> listaBrojeva){
+	private double sabiranje(LinkedList<Double> listaBrojeva){
 		int i=0;
 		if(listaBrojeva.isEmpty())
 			return 0;
-		double result=listaBrojeva.get(i).getBroj();
+		double result=listaBrojeva.get(i);
 		for (i = 1; i < listaBrojeva.size(); i++) {
-			result=result+listaBrojeva.get(i).getBroj();
+			result=result+listaBrojeva.get(i);
 		}
 		return result;
 	}
-	private double oduzimanje(LinkedList<Broj> listaBrojeva){
+	private double oduzimanje(LinkedList<Double> listaBrojeva){
 		int i=0;
 		if(listaBrojeva.isEmpty())
 			return 0;
-		double result=listaBrojeva.get(i).getBroj();
+		double result=listaBrojeva.get(i);
 		for (i = 1; i < listaBrojeva.size(); i++) {
-			result=result-listaBrojeva.get(i).getBroj();
+			result=result-listaBrojeva.get(i);
 		}
 		return result;
 	}
-	private double mnozenje(LinkedList<Broj> listaBrojeva){
+	private double mnozenje(LinkedList<Double> listaBrojeva){
 		int i=0;
 		if(listaBrojeva.isEmpty())
 			return 0;
-		double result=listaBrojeva.get(i).getBroj();
+		double result=listaBrojeva.get(i);
 		for (i = 1; i < listaBrojeva.size(); i++) {
-			result=result*listaBrojeva.get(i).getBroj();
+			result=result*listaBrojeva.get(i);
 		}
 		return result;
 	}
@@ -106,15 +112,15 @@ public class ServerFileTransferThread extends Thread {
 	 * @param listaBrojeva
 	 * @return
 	 */
-	private double deljenje(LinkedList<Broj> listaBrojeva){
+	private double deljenje(LinkedList<Double> listaBrojeva){
 		int i=0;
 		if(listaBrojeva.isEmpty())
 			return 0;
-		double result=listaBrojeva.get(i).getBroj();
+		double result=listaBrojeva.get(i);
 		for (i = 1; i < listaBrojeva.size(); i++) {
-			if(listaBrojeva.get(i).getBroj()==0)
+			if(listaBrojeva.get(i)==0)
 				return 0;
-			result=result/listaBrojeva.get(i).getBroj();
+			result=result/listaBrojeva.get(i);
 		}
 		return result;
 	}
