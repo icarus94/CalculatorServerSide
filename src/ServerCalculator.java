@@ -16,7 +16,7 @@ public class ServerCalculator {
 			while(true){
 				Socket newSocket=serverSocketForControl.accept();
 				serverControlSocket.addFirst(new ServerControlThread(newSocket,serverSocketForFileTransfer));
-				serverControlSocket.getFirst().run();
+				serverControlSocket.getFirst().start(); // ili start????
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

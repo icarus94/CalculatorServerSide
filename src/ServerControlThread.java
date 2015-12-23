@@ -6,7 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 
-public class ServerControlThread implements Runnable{
+public class ServerControlThread extends Thread{
 	private String znak=null;
 	Socket socketControl=null;
 	ServerSocket serverSocketForFileTransfer = null;
@@ -23,9 +23,7 @@ public class ServerControlThread implements Runnable{
 		this.serverSocketForFileTransfer = serverSocketForFileTransfer;
 	}
 
-	public static void main(String[] args) {
-		
-	}
+	
 
 	public void run() {
 		try {
@@ -43,8 +41,10 @@ public class ServerControlThread implements Runnable{
 					ServerCalculator.serverControlSocket.remove(this);
 					return;
 				}
+				outputToClient.println("hej");
 				if(response.contains("need_to_calculate")){
 					System.out.println("Hoce da izvrsi racunsku operaciju");
+					outputToClient.println("approved");
 					Socket newSocket=serverSocketForFileTransfer.accept();
 				}
 				
@@ -52,6 +52,7 @@ public class ServerControlThread implements Runnable{
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("Lost connection");
+			ServerCalculator.serverControlSocket.remove(this);
 		}
 		
 	}
