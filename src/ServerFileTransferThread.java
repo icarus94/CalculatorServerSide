@@ -24,16 +24,18 @@ public class ServerFileTransferThread extends Thread {
 	}
 
 
-	public void run(){
+	 synchronized public void run(){
 		try {
-			inputToClient = new BufferedReader(new InputStreamReader(socketFileTransfer.getInputStream()));
+			//inputToClient = new BufferedReader(new InputStreamReader(socketFileTransfer.getInputStream()));
 			outputToClient = new PrintStream(socketFileTransfer.getOutputStream());
-			dataToClient = new ObjectInputStream(new BufferedInputStream(socketFileTransfer.getInputStream()));
+			dataToClient = new ObjectInputStream((socketFileTransfer.getInputStream()));
 			outputToClient.println("operation");
 			znak=inputToClient.readLine();
 			outputToClient.println("numbers");
 			Object readObject = dataToClient.readObject();
-			nizBrojeva= (LinkedList<Broj>) readObject;
+			dataToClient.close();
+			if(readObject instanceof LinkedList<?>)
+				nizBrojeva= (LinkedList<Broj>) readObject;
 			
 			
 			if(znak=="+")

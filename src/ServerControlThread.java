@@ -41,7 +41,6 @@ public class ServerControlThread extends Thread{
 					ServerCalculator.serverControlSocket.remove(this);
 					return;
 				}
-				outputToClient.println("hej");
 				if(response.contains("need_to_calculate")){
 					System.out.println("Hoce da izvrsi racunsku operaciju");
 					outputToClient.println("approved");
