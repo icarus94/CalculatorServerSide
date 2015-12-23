@@ -46,6 +46,7 @@ public class ServerControlThread extends Thread{
 					System.out.println("Hoce da izvrsi racunsku operaciju");
 					outputToClient.println("approved");
 					Socket newSocket=serverSocketForFileTransfer.accept();
+					new ServerFileTransferThread(newSocket).start();
 				}
 				
 			}

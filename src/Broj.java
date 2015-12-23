@@ -1,5 +1,7 @@
+import java.io.Serializable;
 
-public class Broj {
+
+public class Broj implements Serializable {
 	private double broj;
 
 	public Broj(double broj) {
