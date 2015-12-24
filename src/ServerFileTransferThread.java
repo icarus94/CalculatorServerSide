@@ -37,7 +37,16 @@ public class ServerFileTransferThread extends Thread {
 			outputToClient.println("numbers");
 			String c;
 			while(!((c=inputToClient.readLine()).contains("done"))){
-				double b=Double.parseDouble(c);
+				double b;
+				try {
+					b = Double.parseDouble(c);
+				} catch (NumberFormatException e) {
+					outputToClient.println("unet String kao broj");
+					inputToClient.close();
+					outputToClient.close();
+					socketFileTransfer.close();
+					return;
+				}
 				nizBrojeva.addFirst(b);
 			}
 			
@@ -67,11 +76,11 @@ public class ServerFileTransferThread extends Thread {
 					result="ne mozes deliti 0";
 				}
 			}
-			/*
+			
 			if(result==null)
 				result="Operacija nije dobro uneta";
 			if(nizBrojeva.isEmpty())
-			 	result="Greska u listi brojeva";*/ //suvisan kod,ako ovo ne radi,ukazuje na problem sa klijentske strane,
+			 	result="Greska u listi brojeva"; //suvisan kod,ako ovo ne radi,ukazuje na problem sa klijentske strane,
 													//gde se ne moze iz GUI-a ispraviti logicka greska
 			outputToClient.println(result);
 			/*while(true){
